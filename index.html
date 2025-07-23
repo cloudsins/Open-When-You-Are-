@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Open When You Are:</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Limelight&display=swap');
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("bg1.png");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #003366;
+      font-size: 2.7em;
+      font-weight: bold;
+      margin: 50px 0 5px;
+      font-family: 'Limelight', cursive;
+    }
+
+    .cards-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 40px;
+      padding: 0 20px;
+      margin-top: 50px;
+    }
+
+    .row {
+      display: flex;
+      gap: 40px;
+    }
+
+    .row.center-offset {
+      margin-left: calc((27px + 40px) / -2 + 20px);
+    }
+
+    .card {
+      background-color: #80c0ff;
+      background-size: cover;
+      background-position: center;
+      width: 250px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+
+    .card p {
+      color: #fff;
+      font-size: 1.2em;
+      margin: 0 15px;
+      z-index: 1;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      opacity: 0;
+      display: none;
+      z-index: 900;
+      transition: opacity 0.3s ease;
+    }
+
+    .detail-box {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background-color: beige;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 90%; max-width: 600px;
+      padding: 20px;
+      display: none;
+      z-index: 1000;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      transform-origin: center center;
+    }
+
+    .detail-box.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .detail-box h2 {
+      display: none;
+    }
+
+    .detail-box .detail-content {
+      margin-top: 15px;
+      font-size: 1em;
+      color: #333;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      text-align: center;
+    }
+
+    .cards-wrapper .row:first-child .card:nth-child(1) { background-image: url('img1.jpg'); }
+    .cards-wrapper .row:first-child .card:nth-child(2) { background-image: url('img2.jpg'); }
+    .cards-wrapper .row:first-child .card:nth-child(3) { background-image: url('img3.jpg'); }
+    .cards-wrapper .row.center-offset .card:nth-child(1) { background-image: url('img4.jpg'); }
+    .cards-wrapper .row.center-offset .card:nth-child(2) { background-image: url('img5.jpg'); }
+
+    .cards-wrapper .row:first-child .card:nth-child(1) p { color: #4B0082; }
+    .cards-wrapper .row:first-child .card:nth-child(2) p { color: rgb(51, 3, 51); }
+    .cards-wrapper .row:first-child .card:nth-child(3) p { color: orange; }
+    .cards-wrapper .row.center-offset .card:nth-child(1) p { color: deeppink; }
+    .cards-wrapper .row.center-offset .card:nth-child(2) p { color: #00008B; }
+
+    .detail-box .nav-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40%;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .nav-left { left: 0; }
+    .nav-right { right: 0; }
+
+    .page {
+      display: none;
+      animation: fade 0.3s ease-in-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .page h3 {
+      font-family: 'Limelight', cursive;
+      margin-top: 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome xexe! How are you feeling today, bub?</h1>
+  <div class="cards-wrapper">
+    <div class="row">
+      <div class="card" data-title="Anxious/Overwhelmed"><p>Anxious/Overwhelmed</p></div>
+      <div class="card" data-title="Need a Hug"><p>Need a Hug</p></div>
+      <div class="card" data-title="Happy"><p>Happy</p></div>
+    </div>
+    <div class="row center-offset">
+      <div class="card" data-title="Want a Reminder You Feel Loved"><p>Want a Reminder You Feel Loved</p></div>
+      <div class="card" data-title="Looking for a Reason to Keep Going"><p>Looking for a Reason to Keep Going</p></div>
+    </div>
+  </div>
+
+  <div class="overlay"></div>
+  <div class="detail-box">
+    <div class="nav-zone nav-left"></div>
+    <div class="nav-zone nav-right"></div>
+    <div id="pages">
+      <div class="page active"><div class="detail-content"></div></div>
+      <div class="page"><h3>From ☕</h3><div class="detail-content"></div></div>
+      <div class="page"><h3>From 🦁</h3><div class="detail-content"></div></div>
+      <div class="page"><h3>From 🦋</h3><div class="detail-content"></div></div>
+      <div class="page"><h3>From 🌞</h3><div class="detail-content"></div></div>
+      <div class="page"><h3>From 🍀</h3><div class="detail-content"></div></div>
+      <div class="page"><h3>From ❄️</h3><div class="detail-content"></div></div>
+    </div>
+  </div>
+
+<script>
+const cards = document.querySelectorAll('.card');
+const overlay = document.querySelector('.overlay');
+const detailBox = document.querySelector('.detail-box');
+const pages = document.querySelectorAll('.page');
+const leftZone = document.querySelector('.nav-left');
+const rightZone = document.querySelector('.nav-right');
+let currentPage = 0;
+
+const introText = {
+  'Anxious/Overwhelmed': "Feeling a bit tangled today? It's okay, bub. Click through, your family left you a little love.",
+  'Need a Hug': "Craving a warm hug? Your people wrapped their hearts in words, open the pages and feel it.",
+  'Happy': "Glowing today, aren’t you? Your family noticed too, they’ve got something sweet to add to your joy!",
+  'Want a Reminder You Feel Loved': "Some days, we all need a gentle reminder. Your family has a few, just for you, right inside.",
+  'Looking for a Reason to Keep Going': "When the days feel heavy... open this. You don’t have to carry it all alone."
+};
+
+  const messageContent = {
+    'Anxious/Overwhelmed': [
+      ["worlds don't end so easily as our anxious minds paint them to be.", "the jittery feeling means you will get this right. It's just your body knows before you.", "let's take a deep breath together (and curse under it if you feel like it)"],
+      ["the uncomfortable things aren't always bad, this is just a process of becoming 🩵", "let's just do what we can do and get through today 🫂", "the uncomfortable things aren't always bad, this is just a process of becoming 🩵"],
+      ["the water that swallowed up our wounds will someday calm down.", "this overwhelming day will pass, remember that beautiful days await"],
+      ["It's okay to slow down. The world can wait.", "You’re doing the best you can with what you carry", "The storm in your chest will pass. Just stay", "You’re not behind — you’re just moving at your own pace", "You don’t need to be okay right now. You just need to breathe."],
+      ["I know it’s frustrating when things don’t go the way we planned but maybe those twists and surprises are what we need to grow beyond our comfort zone.", "Not everything has to make sense right now. Let time do its thing. What’s meant for you will come gently, when you are ready to hold it."],
+      ["Life is tough but so are you!", "Take a breath my love, this is just a chapter, not your whole story.", "Peace begins with letting go of what you cannot control."]
+    ],
+    'Need a Hug': [
+      ["i wonder would you be shorter than me when I hug or would it be the other way around?", "even if the distance is long, hearts travel to where they find their loved ones and mine is closer to you than you think ❤️"],
+      ["we crossed paths not only by coincidence— who knows we will also have a real life group hug. hold on to that!", "☕🫂🦁🫂🦋🫂🍀🫂❄️🫂🌞🫂"],
+      ["sending you my warmest hug from afar.", "trust yourself, we’ll be next to you."],
+      ["You’re allowed to rest here. You don’t have to explain anything.", "Being lost doesn’t mean you won’t find your way again", "Let this be your reminder that you don’t always have to be strong", "Your feelings are always valid.", "You’re still learning how to be gentle with yourself. That takes courage "],
+      ["Some days all we need is a hug, so here is mine.", "I can’t fix everything, but I can promise you that you are not alone, not now, not ever."],
+      ["I have a big hug waiting for you whenever you need it.", "You're my blue spring 💙 and i will always be here when you need me.", "Honestly I just hugged you in my mind, i hope you felt the squeeze hehe ><"]
+    ],
+    'Happy': [
+      ["happiness looks good on you ^^", "you deserve to feel light today and every other day ❤️", "treat yourself with something nice today please~ you deserve it ^^"],
+      ["your happiness and well-being will always come first okiee", "let it sink in and remember the feeling, this is exactly what you deserve in life and don't ever doubt it!"],
+      ["if you're happy, it makes others happy too!", "you’re people’s rainbow today. thank you for being you!"],
+      ["You deserve to feel lightness, without guilt or hesitation", "Don’t question why today feels good. Accept it as proof you’re healing", "You’re rediscovering parts of yourself that joy had once covered in dust", "There’s beauty in this feeling — even if you can’t name it yet", "Your joy doesn’t need to be explained. It just needs to be felt"],
+      ["Your energy is contagious, and I hope you know how lucky we are to witness your joy.", "You deserve every second of this happiness. I am celebrating with you even from afar. "],
+      ["Keep smiling happiness looks pretty on you ><", "BREAKING NEWS: You're happy, I'm happy :))", "It made you happy? Do it again.", "May all your days look like this ><"]
+    ],
+    'Want a Reminder You Feel Loved': [
+      ["you were our missing piece xexe~", "i don't say this as often as I should but I love you so I hope you remember that"],
+      ["your existence itself is the proof that the kindest love exists", "if the world i love you doesn't exist, i will give my everything to you 🩵"],
+      ["a future without you is a world without color, filled with monochrome coldness", "you’re people’s light. you’re precious."],
+      ["You don’t have to be the best version of yourself to be loved right now", "Just because love isn’t loud doesn’t mean it isn’t real", "You don’t need to shrink yourself to be worthy of love that stays", "Love doesn’t disappear just because you’re struggling", "We care about you. You don’t have to earn that 🫂"],
+      ["Even when you are not feeling it, I hope you still know that I love you my aling, fully, quietly, and always.", "Even when you are overwhelmed or quiet, I still love you. You are my sister, not because you are perfect, but because you are you."],
+      ["I may not always know what to do or say but i will always be here for you no matter what.", "My twin, you matter, your voice matters, your presence matters without you I'd feel empty, like a piece of me is missing.", "No matter how much i say 'I love you', i will always love you more then that."]
+    ],
+    'Looking for a Reason to Keep Going': [
+      ["we promised to meet one day right? I am waiting on that promise", "even with hardships, the world never pause. For better or worse, it keeps going. Let's keep going till we reach the 'better' parts"],
+      ["sometimes I don't know my reason too, but maybe it's so that i can meet you all in person one day", "the fact that you were born is a precious lottery win, bcs you've beaten that 1 in 400 trillion chances to be here! It's fated 🥳"],
+      ["i can go through this, I don’t want to run away anymore.", "even if I have to run with one foot as if it’s broken, i will go on my own path."],
+      ["Let this be your reason today: the chance that tomorrow might feel lighter", "You’ve made it through days you swore you wouldn’t — don’t let this one define you.", "You’re allowed to keep going without knowing why. Survival is still something sacred", "You are allowed to keep going without having it all figured out. Existing is still brave","If all you can do today is exist, that’s still a victory", "MOA STATION loves you no matter what"],
+      ["I want you to know that I need you here, even when it’s hard, because you are a reason someone else keeps going.", "There’s a version of you in the future who is so proud you kept going (I am too, aling)."],
+      ["There is a crack but that's how light will come in.", "If you're going through hell right now, keep going because why tf would you want to stop in hell?", "Always remember that there is a version of you in the future looking. back and saying 'I am so proud that you kept going'.", "A stumble is still a step so keep going!"]
+    ]
+  };
+
+function showPage(index) {
+  pages.forEach((p, i) => p.classList.toggle('active', i === index));
+}
+
+cards.forEach((card) => card.addEventListener('click', () => {
+  overlay.style.display = 'block';
+  requestAnimationFrame(() => overlay.style.opacity = '1');
+  detailBox.style.display = 'block';
+  detailBox.classList.remove('show');
+  currentPage = 0;
+  showPage(currentPage);
+
+  const title = card.getAttribute('data-title');
+  const contentList = messageContent[title] || [];
+  pages[0].querySelector('.detail-content').textContent = introText[title] || '';
+
+  for (let i = 1; i <= 6; i++) {
+  const div = pages[i].querySelector('.detail-content');
+  const quotes = contentList[i - 1] || [];
+  div.innerHTML = `${quotes[0] || ''}<br><br>${quotes[1] || ''}<br><br>${quotes[2] || ''}`;
+}
+
+  requestAnimationFrame(() => detailBox.classList.add('show'));
+}));
+
+overlay.addEventListener('click', () => {
+  detailBox.classList.remove('show');
+  overlay.style.opacity = '0';
+  detailBox.addEventListener('transitionend', function handler() {
+    overlay.style.display = 'none';
+    detailBox.style.display = 'none';
+    detailBox.style.transform = '';
+    detailBox.removeEventListener('transitionend', handler);
+  }, { once: true });
+});
+
+rightZone.addEventListener('click', () => {
+  currentPage = (currentPage + 1) % pages.length;
+  showPage(currentPage);
+});
+
+leftZone.addEventListener('click', () => {
+  currentPage = (currentPage - 1 + pages.length) % pages.length;
+  showPage(currentPage);
+});
+</script>
+</body>
+</html>
